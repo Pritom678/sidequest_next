@@ -1,6 +1,7 @@
 "use client";
 
 import { Component } from "react";
+import { AlertIcon } from "./Icons";
 
 export default class ErrorBoundary extends Component {
   constructor(props) {
@@ -31,9 +32,11 @@ export default class ErrorBoundary extends Component {
       return (
         <div className="min-h-screen bg-base-100 flex items-center justify-center px-4">
           <div className="max-w-md w-full text-center space-y-6">
-            <div className="text-6xl">⚠️</div>
+            <div className="text-6xl">
+              <AlertIcon size={48} className="text-red-500" />
+            </div>
             <div className="space-y-2">
-              <h1 className="text-2xl font-bold text-base-content">
+              <h1 className="text-2xl font-bold text-base-content dark:text-white mb-2">
                 Oops! Something went wrong
               </h1>
               <p className="text-base-content/70">

@@ -2,13 +2,13 @@ export default function QuestCard({ quest }) {
   const getStatusColor = (status) => {
     switch (status) {
       case "completed":
-        return "bg-gradient-to-r from-green-500 to-emerald-600";
+        return "bg-linear-to-r from-green-500 to-emerald-600";
       case "in-progress":
-        return "bg-gradient-to-r from-blue-500 to-indigo-600";
+        return "bg-linear-to-r from-blue-500 to-indigo-600";
       case "planning":
-        return "bg-gradient-to-r from-amber-500 to-orange-600";
+        return "bg-linear-to-r from-amber-500 to-orange-600";
       default:
-        return "bg-gradient-to-r from-gray-500 to-slate-600";
+        return "bg-linear-to-r from-gray-500 to-slate-600";
     }
   };
 

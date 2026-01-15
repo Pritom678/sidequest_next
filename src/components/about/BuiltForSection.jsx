@@ -1,28 +1,30 @@
+import { FiBookOpen, FiMonitor, FiEdit3, FiBriefcase } from "react-icons/fi";
+
 export default function BuiltForSection() {
   const audiences = [
     {
       title: "Students",
       description:
         "Track study goals, manage assignments, and build consistent learning habits with gamified motivation.",
-      icon: "🎓",
+      icon: FiBookOpen,
     },
     {
       title: "Developers",
       description:
         "Break down complex projects into manageable tasks and maintain steady progress on coding goals.",
-      icon: "💻",
+      icon: FiMonitor,
     },
     {
       title: "Creators",
       description:
         "Transform creative projects into achievable quests and maintain momentum on content creation.",
-      icon: "🎨",
+      icon: FiEdit3,
     },
     {
       title: "Professionals",
       description:
         "Set and achieve career goals, develop new skills, and maintain work-life balance through structured planning.",
-      icon: "💼",
+      icon: FiBriefcase,
     },
   ];
 
@@ -40,7 +42,9 @@ export default function BuiltForSection() {
               key={index}
               className="p-6 rounded-lg bg-base-200 hover:shadow-lg transition-all duration-300 hover:scale-105"
             >
-              <div className="text-3xl mb-4 text-center">{audience.icon}</div>
+              <div className="w-16 h-16 bg-linear-to-r from-blue-500 to-purple-600/20 rounded-lg flex items-center justify-center text-blue-600 mb-4 mx-auto">
+                <audience.icon className="w-8 h-8" />
+              </div>
               <h3 className="text-xl font-semibold text-base-content mb-3 text-center">
                 {audience.title}
               </h3>

@@ -1,6 +1,26 @@
 import { dbConnect } from "@/lib/dbConnect";
 import QuestCard from "@/components/quests/QuestCard";
 
+export const metadata = {
+  title: "Available Quests - SideQuest",
+  description:
+    "Browse and discover exciting quests on SideQuest. Choose your next adventure and start earning rewards today.",
+  keywords: [
+    "quests",
+    "adventures",
+    "challenges",
+    "rewards",
+    "gamification",
+    "sidequest quests",
+  ],
+  openGraph: {
+    title: "Available Quests - SideQuest",
+    description:
+      "Discover exciting quests and start your next adventure on SideQuest.",
+    type: "website",
+  },
+};
+
 async function getQuests() {
   try {
     // Debug: Check if environment variables are set

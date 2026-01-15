@@ -1,3 +1,5 @@
+import { FiPlus, FiCheck, FiStar } from "react-icons/fi";
+
 export default function HowItWorks() {
   const steps = [
     {
@@ -5,18 +7,21 @@ export default function HowItWorks() {
       title: "Create Your Quest",
       description:
         "Define your big goal and break it down into smaller, manageable tasks that you can tackle daily.",
+      icon: FiPlus,
     },
     {
       number: "2",
       title: "Track Daily Progress",
       description:
         "Complete tasks, check off milestones, and watch your progress bar grow as you move closer to your goal.",
+      icon: FiCheck,
     },
     {
       number: "3",
       title: "Achieve & Celebrate",
       description:
         "Complete your quest, unlock achievements, and start your next adventure with newfound confidence.",
+      icon: FiStar,
     },
   ];
 
@@ -59,51 +64,7 @@ export default function HowItWorks() {
               {/* Visual Icon */}
               <div className="pl-16 lg:pl-0">
                 <div className="w-full h-32 bg-base-100 rounded-lg flex items-center justify-center">
-                  {index === 0 && (
-                    <svg
-                      className="w-16 h-16 text-primary/30"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M12 4v16m8-8H4"
-                      />
-                    </svg>
-                  )}
-                  {index === 1 && (
-                    <svg
-                      className="w-16 h-16 text-primary/30"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                      />
-                    </svg>
-                  )}
-                  {index === 2 && (
-                    <svg
-                      className="w-16 h-16 text-primary/30"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={2}
-                        d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"
-                      />
-                    </svg>
-                  )}
+                  <step.icon className="w-16 h-16 text-primary/30" />
                 </div>
               </div>
             </div>
