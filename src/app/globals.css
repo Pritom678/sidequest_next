@@ -1,26 +1,230 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+@plugin "daisyui" {
+  themes: sidequest, sidequest-night;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+/* 🌤️ Light Theme */
+@plugin "daisyui/theme" {
+  name: "sidequest";
+  default: true;
+
+  --color-primary: #6d28d9; /* Purple */
+  --color-secondary: #0d9488; /* Teal */
+  --color-accent: #f59e0b; /* Gold */
+
+  --color-neutral: #1f2933; /* Dark slate */
+  --color-neutral-content: #1f2933; /* Dark slate text */
+  --color-base-100: #f9fafb; /* Page background */
+  --color-base-200: #ffffff; /* Cards - pure white */
+  --color-base-300: #e5e7eb; /* Borders */
+  --color-base-content: #1f2937; /* Primary text */
+
+  --color-info: #2563eb;
+  --color-success: #16a34a;
+  --color-warning: #d97706;
+  --color-error: #dc2626;
+
+  --radius-box: 1rem;
+  --radius-btn: 0.75rem;
+  --radius-badge: 0.5rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* 🌙 Dark Theme */
+@plugin "daisyui/theme" {
+  name: "sidequest-night";
+
+  --color-primary: #8b5cf6;
+  --color-secondary: #2dd4bf;
+  --color-accent: #fbbf24;
+
+  --color-neutral: #e5e7eb;
+  --color-neutral-content: #e5e7eb; /* Light text */
+  --color-base-100: #0f172a;
+  --color-base-200: #1e293b;
+  --color-base-300: #334155;
+  --color-base-content: #ffffff; /* White primary text */
+
+  --color-info: #60a5fa;
+  --color-success: #4ade80;
+  --color-warning: #facc15;
+  --color-error: #f87171;
+
+  --radius-box: 1rem;
+  --radius-btn: 0.75rem;
+  --radius-badge: 0.5rem;
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom dark variant */
+@custom-variant dark (&:where([data-theme=sidequest-night], [data-theme=sidequest-night] *));
+
+/* Light mode enhancements */
+[data-theme="sidequest"] .card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  border: 1px solid #d1d5db;
+}
+
+[data-theme="sidequest"] .input,
+[data-theme="sidequest"] .textarea,
+[data-theme="sidequest"] .select {
+  border: 2px solid #d1d5db;
+  background-color: #ffffff;
+}
+
+[data-theme="sidequest"] .input:focus,
+[data-theme="sidequest"] .textarea:focus,
+[data-theme="sidequest"] .select:focus {
+  border-color: #6d28d9;
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+}
+
+[data-theme="sidequest"] .btn-primary {
+  background: linear-gradient(to right, #6d28d9, #7c3aed);
+  border: none;
+  box-shadow: 0 4px 6px -1px rgba(109, 40, 217, 0.3);
+}
+
+[data-theme="sidequest"] .btn-primary:hover {
+  background: linear-gradient(to right, #5b21b6, #6d28d9);
+  box-shadow: 0 6px 8px -1px rgba(109, 40, 217, 0.4);
+}
+
+/* Ensure all text is white in dark mode */
+[data-theme="sidequest-night"] {
+  color: #ffffff;
+}
+
+[data-theme="sidequest-night"] .text-base-content {
+  color: #ffffff !important;
+}
+
+[data-theme="sidequest-night"] .label-text {
+  color: #ffffff !important;
+}
+
+[data-theme="sidequest-night"] .label-text-alt {
+  color: #a1a1aa !important;
+}
+
+[data-theme="sidequest-night"] .card-title {
+  color: #ffffff !important;
+}
+
+[data-theme="sidequest-night"] h1,
+[data-theme="sidequest-night"] h2,
+[data-theme="sidequest-night"] h3,
+[data-theme="sidequest-night"] h4,
+[data-theme="sidequest-night"] h5,
+[data-theme="sidequest-night"] h6 {
+  color: #ffffff !important;
+}
+
+[data-theme="sidequest-night"] p,
+[data-theme="sidequest-night"] span,
+[data-theme="sidequest-night"] div {
+  color: #ffffff !important;
+}
+
+/* Override opacity classes for dark mode */
+[data-theme="sidequest-night"] .opacity-70 {
+  opacity: 0.8 !important;
+}
+
+[data-theme="sidequest-night"] .opacity-60 {
+  opacity: 0.7 !important;
+}
+
+/* Global button styles */
+.btn {
+  border-radius: 1rem !important;
+}
+
+/* Dark mode specific improvements */
+html[data-theme="sidequest-night"] .card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.3),
+    0 2px 4px -1px rgba(0, 0, 0, 0.2);
+}
+
+html[data-theme="sidequest-night"] .input {
+  background-color: hsl(var(--b2));
+  color: hsl(var(--bc));
+  border-color: hsl(var(--b3));
+}
+
+html[data-theme="sidequest-night"] .input:focus {
+  border-color: hsl(var(--p));
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+}
+
+/* Light mode specific improvements */
+html[data-theme="sidequest"] .card {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1),
+    0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+html[data-theme="sidequest"] .input {
+  background-color: hsl(var(--b1));
+  color: hsl(var(--bc));
+  border-color: hsl(var(--b3));
+}
+
+html[data-theme="sidequest"] .input:focus {
+  border-color: hsl(var(--p));
+  box-shadow: 0 0 0 3px rgba(109, 40, 217, 0.1);
+}
+
+/* Dark mode text fixes */
+html[data-theme="sidequest-night"] .text-gray-900 {
+  color: #ffffff !important;
+}
+
+html[data-theme="sidequest-night"] .text-gray-800 {
+  color: #ffffff !important;
+}
+
+html[data-theme="sidequest-night"] .text-gray-700 {
+  color: #e5e7eb !important;
+}
+
+html[data-theme="sidequest-night"] .text-gray-600 {
+  color: #d1d5db !important;
+}
+
+html[data-theme="sidequest-night"] .text-gray-500 {
+  color: #9ca3af !important;
+}
+
+html[data-theme="sidequest-night"] .text-gray-400 {
+  color: #6b7280 !important;
+}
+
+/* Dark mode background fixes */
+html[data-theme="sidequest-night"] .bg-white {
+  background-color: #1e293b !important;
+}
+
+html[data-theme="sidequest-night"] .bg-gray-50 {
+  background-color: #0f172a !important;
+}
+
+html[data-theme="sidequest-night"] .bg-gray-100 {
+  background-color: #1e293b !important;
+}
+
+html[data-theme="sidequest-night"] .bg-gray-200 {
+  background-color: #374151 !important;
+}
+
+/* Dark mode border fixes */
+html[data-theme="sidequest-night"] .border-gray-200 {
+  border-color: #374151 !important;
+}
+
+html[data-theme="sidequest-night"] .border-gray-300 {
+  border-color: #4b5563 !important;
+}
+
+html[data-theme="sidequest-night"] .border-gray-700 {
+  border-color: #1f2937 !important;
 }
