@@ -6,6 +6,7 @@ import AuthCheck from "@/components/auth/AuthCheck";
 import QuestCard from "@/components/projects/QuestCard";
 import StreakTracker from "@/components/quests/StreakTracker";
 import AnalyticsDashboard from "@/components/quests/AnalyticsDashboard";
+import ModernButton from "@/components/ui/ModernButton";
 
 export default function ProjectsPage() {
   const [quests, setQuests] = useState([]);
@@ -52,25 +53,32 @@ export default function ProjectsPage() {
               My Projects
             </h1>
             <div className="flex gap-4">
-              <button
+              <ModernButton
+                onClick={() => router.push("/achievements")}
+                variant="outline"
+                size="md"
+              >
+                🏆 Achievements
+              </ModernButton>
+              <ModernButton
                 onClick={() => setShowAnalytics(!showAnalytics)}
-                className={`btn ${
-                  showAnalytics ? "btn-primary" : "btn-outline"
-                }`}
+                variant={showAnalytics ? "primary" : "outline"}
+                size="md"
               >
                 📊 {showAnalytics ? "Projects" : "Analytics"}
-              </button>
+              </ModernButton>
               <form action="/api/auth/logout" method="POST">
-                <button type="submit" className="btn btn-outline">
+                <ModernButton type="submit" variant="outline" size="md">
                   Logout
-                </button>
+                </ModernButton>
               </form>
-              <button
+              <ModernButton
                 onClick={() => router.push("/quests/create")}
-                className="btn btn-primary text-white"
+                variant="primary"
+                size="md"
               >
                 Create New Quest
-              </button>
+              </ModernButton>
             </div>
           </div>
 
@@ -96,12 +104,13 @@ export default function ProjectsPage() {
                             You haven't started any quests yet. Go to the quests
                             page and click "Start Quest" to begin your journey!
                           </p>
-                          <button
+                          <ModernButton
                             onClick={() => router.push("/quests")}
-                            className="btn btn-primary"
+                            variant="primary"
+                            size="lg"
                           >
                             Browse Quests
-                          </button>
+                          </ModernButton>
                         </div>
                       </div>
                     )}

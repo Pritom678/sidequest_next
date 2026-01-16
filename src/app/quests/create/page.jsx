@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { FiZap } from "react-icons/fi";
+import AISuggestionModal from "@/components/quests/AISuggestionModal";
+import ModernButton from "@/components/ui/ModernButton";
+import AchievementNotification from "@/components/achievements/AchievementNotification";
+import { useAchievements } from "@/hooks/useAchievements";
 
 export default function CreateQuestPage() {
   const router = useRouter();
@@ -24,6 +29,16 @@ export default function CreateQuestPage() {
   const [errors, setErrors] = useState({});
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [userHistory, setUserHistory] = useState(null);
+
+  // Initialize achievements hook
+  const {
+    notification,
+    isNotificationVisible,
+    closeNotification,
+    triggerAchievementCheck,
+  } = useAchievements();
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
@@ -91,11 +106,8 @@ export default function CreateQuestPage() {
       [name]: processedValue,
     }));
 
-    // Clear messages when user starts typing
     setError("");
     setSuccess("");
-
-    // Validate field on change
     validateField(name, processedValue);
   };
 
@@ -132,11 +144,35 @@ export default function CreateQuestPage() {
     return isValid;
   };
 
+  const handleAISuggestion = (suggestion) => {
+    setFormData({
+      id:
+        suggestion.title.toLowerCase().replace(/\s+/g, "-") + "-" + Date.now(),
+      name: suggestion.title,
+      description: suggestion.description,
+      price: 0,
+      reward: "Achievement Badge",
+      xp: suggestion.estimatedDays * 10,
+      difficulty:
+        suggestion.difficulty.charAt(0).toUpperCase() +
+        suggestion.difficulty.slice(1),
+      duration: `${suggestion.estimatedDays} days`,
+      category: suggestion.category,
+      image: "/api/placeholder/quest/" + suggestion.category,
+      status: "available",
+      popularity: Math.floor(Math.random() * 30) + 10,
+      tags: suggestion.category + ", ai-generated, " + suggestion.difficulty,
+    });
+
+    setIsAIModalOpen(false);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!validateForm()) {
-      setError("Please fix the errors in the form");
+      setError("Please fix errors in form");
       return;
     }
 
@@ -157,6 +193,14 @@ export default function CreateQuestPage() {
 
       if (response.ok) {
         setSuccess("Quest created successfully! Redirecting...");
+
+        // Check for quest creation achievements
+        triggerAchievementCheck("quest_created", {
+          createdAt: new Date().toISOString(),
+          category: formData.category,
+          difficulty: formData.difficulty,
+        });
+
         setTimeout(() => {
           router.push("/quests");
         }, 1500);
@@ -174,21 +218,53 @@ export default function CreateQuestPage() {
     <div className="min-h-screen bg-base-100">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="space-y-8">
-          {/* Header */}
           <div className="text-center space-y-4">
-            <h1 className="text-3xl sm:text-4xl font-bold">Create New Quest</h1>
-            <p className="text-lg opacity-70">
-              Add a new adventure to the SideQuest collection
+            <h1 className="text-3xl sm:text-4xl font-bold bg-gradient-to-r from-blue-600 to-purple-600 bg-clip-text text-transparent">
+              Create New Quest
+            </h1>
+            <p className="text-lg opacity-70 max-w-2xl mx-auto">
+              Transform your goals into actionable quests. Use AI assistance or
+              create manually.
             </p>
+
+            <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+              <ModernButton
+                onClick={() => setIsAIModalOpen(true)}
+                variant="primary"
+                size="md"
+                className="px-6"
+              >
+                <FiZap className="w-5 h-5" />
+                AI Quest Assistant
+              </ModernButton>
+
+              <div className="flex items-center gap-2 text-sm opacity-60">
+                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                <span>Database Connected</span>
+              </div>
+            </div>
           </div>
 
-          {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-8" noValidate>
-            {/* Basic Information */}
-            <div className="card bg-base-200 p-8 space-y-6 border border-base-300">
-              <h2 className="text-xl font-semibold border-b border-base-300 pb-3">
-                Basic Information
-              </h2>
+            <div className="card bg-base-200 p-8 space-y-6 border border-base-300 shadow-lg">
+              <div className="flex items-center gap-3 pb-3 border-b border-base-300">
+                <div className="w-8 h-8 bg-blue-500 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold">Basic Information</h2>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="form-control">
@@ -319,11 +395,25 @@ export default function CreateQuestPage() {
               </div>
             </div>
 
-            {/* Quest Details */}
-            <div className="card bg-base-200 p-8 space-y-6 border border-base-300">
-              <h2 className="text-xl font-semibold border-b border-base-300 pb-3">
-                Quest Details
-              </h2>
+            <div className="card bg-base-200 p-8 space-y-6 border border-base-300 shadow-lg">
+              <div className="flex items-center gap-3 pb-3 border-b border-base-300">
+                <div className="w-8 h-8 bg-purple-500 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold">Quest Details</h2>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="form-control">
@@ -425,34 +515,48 @@ export default function CreateQuestPage() {
                     </span>
                   )}
                 </div>
-              </div>
 
-              <div className="form-control">
-                <label htmlFor="quest-tags" className="label">
-                  <span className="label-text font-medium">Tags</span>
-                </label>
-                <input
-                  id="quest-tags"
-                  type="text"
-                  name="tags"
-                  value={formData.tags}
-                  onChange={handleChange}
-                  className="input input-bordered w-full"
-                  placeholder="e.g., adventure, combat, magic, solo"
-                />
-                <label className="label">
-                  <span className="label-text-alt opacity-60">
-                    Separate tags with commas
-                  </span>
-                </label>
+                <div className="form-control">
+                  <label htmlFor="quest-tags" className="label">
+                    <span className="label-text font-medium">Tags</span>
+                  </label>
+                  <input
+                    id="quest-tags"
+                    type="text"
+                    name="tags"
+                    value={formData.tags}
+                    onChange={handleChange}
+                    className="input input-bordered w-full"
+                    placeholder="e.g., adventure, combat, magic, solo"
+                  />
+                  <label className="label">
+                    <span className="label-text-alt opacity-60">
+                      Separate tags with commas
+                    </span>
+                  </label>
+                </div>
               </div>
             </div>
 
-            {/* Rewards & Stats */}
-            <div className="card bg-base-200 p-8 space-y-6 border border-base-300">
-              <h2 className="text-xl font-semibold border-b border-base-300 pb-3">
-                Rewards & Stats
-              </h2>
+            <div className="card bg-base-200 p-8 space-y-6 border border-base-300 shadow-lg">
+              <div className="flex items-center gap-3 pb-3 border-b border-base-300">
+                <div className="w-8 h-8 bg-green-500 rounded-lg flex items-center justify-center">
+                  <svg
+                    className="w-5 h-5 text-white"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                    />
+                  </svg>
+                </div>
+                <h2 className="text-xl font-semibold">Rewards & Stats</h2>
+              </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div className="form-control">
@@ -592,7 +696,6 @@ export default function CreateQuestPage() {
               </div>
             </div>
 
-            {/* Messages */}
             {error && (
               <div className="alert alert-error" role="alert">
                 <svg
@@ -614,42 +717,84 @@ export default function CreateQuestPage() {
 
             {success && (
               <div className="alert alert-success" role="status">
-                <svg
-                  className="w-6 h-6 shrink-0"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
-                  />
-                </svg>
-                <span>{success}</span>
+                <div className="flex items-center gap-3">
+                  <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
+                    <svg
+                      className="w-4 h-4 text-white"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={3}
+                        d="M5 13l4 4L19 7"
+                      />
+                    </svg>
+                  </div>
+                  <div>
+                    <div className="font-semibold">
+                      Quest Created Successfully!
+                    </div>
+                    <div className="text-sm opacity-80">{success}</div>
+                  </div>
+                </div>
               </div>
             )}
 
-            {/* Submit Button */}
-            <div className="flex justify-center">
-              <button
+            <div className="flex flex-col items-center gap-4">
+              <ModernButton
                 type="submit"
-                className="btn btn-primary btn-lg px-8 min-w-50 text-white rounded-2xl"
-                disabled={loading}
+                variant="primary"
+                size="md"
+                loading={loading}
+                className="px-8"
               >
                 {loading ? (
-                  <>
-                    <span className="loading loading-spinner"></span>
-                    Creating...
-                  </>
+                  "Creating..."
                 ) : (
-                  "Create Quest"
+                  <>
+                    <svg
+                      className="w-5 h-5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M12 4v16m8-8H4"
+                      />
+                    </svg>
+                    Create Quest
+                  </>
                 )}
-              </button>
+              </ModernButton>
+
+              {loading && (
+                <div className="flex items-center gap-2 text-sm opacity-70">
+                  <div className="w-4 h-4 border-2 border-blue-500 border-t-transparent rounded-full animate-spin"></div>
+                  <span>Saving to database...</span>
+                </div>
+              )}
             </div>
           </form>
         </div>
+
+        <AISuggestionModal
+          isOpen={isAIModalOpen}
+          onClose={() => setIsAIModalOpen(false)}
+          onAcceptSuggestion={handleAISuggestion}
+          userHistory={userHistory}
+        />
+
+        <AchievementNotification
+          achievement={notification}
+          isVisible={isNotificationVisible}
+          onClose={closeNotification}
+        />
       </div>
     </div>
   );

@@ -7,8 +7,9 @@ export async function POST(request, { params }) {
 
     console.log("Starting quest with ID:", id); // Debug log
 
-    const questsCollection = await dbConnect("quests");
-    const result = await questsCollection.updateOne(
+    const db = await dbConnect();
+    const quest = await db.collection("quests").findOne({ id: id });
+    const result = await db.collection("quests").updateOne(
       { id: id },
       {
         $set: {

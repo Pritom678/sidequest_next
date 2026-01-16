@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const questsCollection = await dbConnect("quests");
-    const quests = await questsCollection
+    const db = await dbConnect();
+    const quests = await db
+      .collection("quests")
       .find({}, { projection: { id: 1, name: 1 } })
       .sort({ createdAt: -1 })
       .toArray();

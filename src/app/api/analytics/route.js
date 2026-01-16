@@ -26,16 +26,15 @@ export async function GET(request) {
     }
 
     // Get user stats
-    const statsCollection = await dbConnect("userStats");
-    const userStats = await statsCollection.findOne({ userId });
+    const db = await dbConnect();
+    const userStats = await db.collection("userStats").findOne({ userId });
 
     // Get all quests for analysis
-    const questsCollection = await dbConnect("quests");
-    const allQuests = await questsCollection.find({}).toArray();
+    const allQuests = await db.collection("quests").find({}).toArray();
 
     // Get progress data
-    const progressCollection = await dbConnect("progress");
-    const userProgress = await progressCollection
+    const userProgress = await db
+      .collection("progress")
       .find({
         userId,
         updatedAt: { $gte: startDate },

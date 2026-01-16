@@ -14,8 +14,8 @@ export async function GET(request, { params }) {
       );
     }
 
-    const questsCollection = await dbConnect("quests");
-    const quest = await questsCollection.findOne({ id: id });
+    const db = await dbConnect();
+    const quest = await db.collection("quests").findOne({ id: id });
 
     console.log("Found quest:", quest); // Debug log
 

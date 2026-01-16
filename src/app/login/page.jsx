@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import FormInput from "@/components/ui/FormInput";
 import ErrorBoundary from "@/components/ui/ErrorBoundary";
+import ModernButton from "@/components/ui/ModernButton";
 
 export default function LoginPage() {
   const [formData, setFormData] = useState({
@@ -155,20 +156,16 @@ export default function LoginPage() {
                   autoComplete="current-password"
                 />
 
-                <button
+                <ModernButton
                   type="submit"
-                  className="btn btn-primary w-full transition-all duration-200 hover:scale-105 focus:scale-95 disabled:scale-100"
-                  disabled={loading}
+                  variant="primary"
+                  size="lg"
+                  loading={loading}
+                  className="w-full"
                   aria-label="Login to your account"
                 >
-                  {loading ? (
-                    <span className="loading loading-spinner">
-                      Logging in...
-                    </span>
-                  ) : (
-                    "Login"
-                  )}
-                </button>
+                  {loading ? "Signing in..." : "Sign In"}
+                </ModernButton>
               </form>
 
               <div className="mt-6 text-center">

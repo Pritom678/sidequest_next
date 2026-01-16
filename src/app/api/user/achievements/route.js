@@ -7,12 +7,14 @@ export async function GET(request) {
     const userId = searchParams.get("userId") || "default-user";
 
     // Get user stats to determine achievements
-    const statsCollection = await dbConnect("userStats");
-    const userStats = await statsCollection.findOne({ userId });
+    const db = await dbConnect();
+    const userStats = await db.collection("userStats").findOne({ userId });
 
     // Get user progress for achievement calculations
-    const progressCollection = await dbConnect("progress");
-    const userProgress = await progressCollection.find({ userId }).toArray();
+    const userProgress = await db
+      .collection("progress")
+      .find({ userId })
+      .toArray();
 
     const achievements = [];
 
@@ -80,9 +82,7 @@ export async function GET(request) {
     }
 
     // Explorer (Try quests from 5+ different categories)
-    const progressCollectionWithQuests = await dbConnect("progress");
-    const questsCollection = await dbConnect("quests");
-    const allQuests = await questsCollection.find({}).toArray();
+    const allQuests = await db.collection("quests").find({}).toArray();
 
     const userCategories = new Set();
     userProgress.forEach((progress) => {

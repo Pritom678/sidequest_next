@@ -7,8 +7,9 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId") || "default-user";
 
-    const progressCollection = await dbConnect("progress");
-    const userProgress = await progressCollection
+    const db = await dbConnect();
+    const userProgress = await db
+      .collection("progress")
       .find({ userId })
       .sort({ updatedAt: -1 })
       .toArray();
@@ -43,10 +44,10 @@ export async function POST(request) {
       );
     }
 
-    const progressCollection = await dbConnect("progress");
+    const db = await dbConnect();
 
     // Check if progress already exists
-    const existingProgress = await progressCollection.findOne({
+    const existingProgress = await db.collection("progress").findOne({
       questId: progressData.questId,
       userId: progressData.userId,
     });
@@ -55,7 +56,7 @@ export async function POST(request) {
 
     if (existingProgress) {
       // Update existing progress
-      await progressCollection.updateOne(
+      await db.collection("progress").updateOne(
         { _id: existingProgress._id },
         {
           $set: {
@@ -71,7 +72,7 @@ export async function POST(request) {
       );
     } else {
       // Create new progress record
-      await progressCollection.insertOne({
+      await db.collection("progress").insertOne({
         questId: progressData.questId,
         userId: progressData.userId,
         progress: progressData.progress,
@@ -109,11 +110,11 @@ export async function PUT(request) {
       );
     }
 
-    const progressCollection = await dbConnect("progress");
+    const db = await dbConnect();
     const completedAt = new Date();
 
     // Update progress to 100% and mark as completed
-    const result = await progressCollection.updateOne(
+    const result = await db.collection("progress").updateOne(
       { questId, userId },
       {
         $set: {
@@ -135,8 +136,7 @@ export async function PUT(request) {
     }
 
     // Update user stats
-    const statsCollection = await dbConnect("userStats");
-    await statsCollection.updateOne(
+    await db.collection("userStats").updateOne(
       { userId },
       {
         $inc: {

@@ -4,6 +4,11 @@
   themes: sidequest, sidequest-night;
 }
 
+/* Animation utilities */
+.animation-delay-150 {
+  animation-delay: 150ms;
+}
+
 /* 🌤️ Light Theme */
 @plugin "daisyui/theme" {
   name: "sidequest";
@@ -24,6 +29,9 @@
   --color-success: #16a34a;
   --color-warning: #d97706;
   --color-error: #dc2626;
+
+  --toast-bg: #1f2937;
+  --toast-text: #ffffff;
 
   --radius-box: 1rem;
   --radius-btn: 0.75rem;
@@ -49,6 +57,9 @@
   --color-success: #4ade80;
   --color-warning: #facc15;
   --color-error: #f87171;
+
+  --toast-bg: #1e293b;
+  --toast-text: #ffffff;
 
   --radius-box: 1rem;
   --radius-btn: 0.75rem;

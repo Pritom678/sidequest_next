@@ -1,3 +1,5 @@
+import ModernButton from "@/components/ui/ModernButton";
+
 export default function QuestCard({ quest }) {
   const getStatusColor = (status) => {
     switch (status) {
@@ -254,12 +256,12 @@ export default function QuestCard({ quest }) {
 
         {/* Action Buttons */}
         <div className="flex gap-3 pt-4 border-t border-gray-100 dark:border-gray-800">
-          <button className="flex-1 btn btn-primary text-sm font-medium">
+          <ModernButton variant="primary" size="sm" className="flex-1">
             View Details
-          </button>
-          <button className="btn btn-outline text-sm font-medium">
+          </ModernButton>
+          <ModernButton variant="outline" size="sm" className="flex-1">
             Edit Quest
-          </button>
+          </ModernButton>
         </div>
       </div>
     </div>

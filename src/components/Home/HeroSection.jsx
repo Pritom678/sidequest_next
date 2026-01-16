@@ -1,4 +1,5 @@
 import Link from "next/link";
+import ModernButton from "@/components/ui/ModernButton";
 
 export default function HeroSection() {
   return (
@@ -21,17 +22,10 @@ export default function HeroSection() {
 
         {/* CTA Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link
-            href="/signup"
-            className="btn bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white btn-lg px-8 py-4 text-lg font-medium hover:scale-105 transition-all duration-200 border-0"
-          >
-            Start Your First Quest
-          </Link>
-          <Link
-            href="/demo"
-            className="btn btn-outline btn-lg px-8 py-4 text-lg font-medium hover:bg-blue-50 dark:hover:bg-blue-900/20 transition-colors duration-200 border-blue-500 text-blue-600 dark:text-blue-400"
-          >
-            Watch Demo
+          <Link href="/signup">
+            <ModernButton variant="primary" size="lg" className="px-8">
+              Start Your First Quest
+            </ModernButton>
           </Link>
         </div>
 

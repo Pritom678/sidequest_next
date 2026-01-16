@@ -333,7 +333,7 @@ export default function QuestDetailsPage({ params }) {
               <div className="space-y-4">
                 <button
                   onClick={handleStartQuest}
-                  disabled={isLoading || !actionButton.disabled}
+                  disabled={isLoading || actionButton.disabled}
                   className={`w-full btn ${actionButton.className} ${
                     isLoading ? "loading" : ""
                   }`}

@@ -7,8 +7,8 @@ export async function GET(request) {
     const userId = searchParams.get("userId") || "default-user";
 
     // Get user stats from database
-    const statsCollection = await dbConnect("userStats");
-    let userStats = await statsCollection.findOne({ userId });
+    const db = await dbConnect();
+    let userStats = await db.collection("userStats").findOne({ userId });
 
     // If no stats exist, create initial stats
     if (!userStats) {
@@ -25,17 +25,18 @@ export async function GET(request) {
         updatedAt: new Date(),
       };
 
-      await statsCollection.insertOne(initialStats);
+      await db.collection("userStats").insertOne(initialStats);
       userStats = initialStats;
     }
 
     // Get total quests count for level calculation
-    const questsCollection = await dbConnect("quests");
-    const totalQuests = await questsCollection.countDocuments();
+    const totalQuests = await db.collection("quests").countDocuments();
 
     // Get progress data for additional stats
-    const progressCollection = await dbConnect("progress");
-    const userProgress = await progressCollection.find({ userId }).toArray();
+    const userProgress = await db
+      .collection("progress")
+      .find({ userId })
+      .toArray();
 
     // Calculate additional stats
     const completedQuests = userProgress.filter((p) => p.completed).length;

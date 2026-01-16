@@ -7,8 +7,8 @@ export async function GET(request) {
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId") || "default-user";
 
-    const statsCollection = await dbConnect("userStats");
-    const userStats = await statsCollection.findOne({ userId });
+    const db = await dbConnect();
+    const userStats = await db.collection("userStats").findOne({ userId });
 
     if (!userStats) {
       return NextResponse.json({
@@ -62,23 +62,23 @@ export async function POST(request) {
   try {
     const { userId } = await request.json();
 
-    const statsCollection = await dbConnect("userStats");
+    const db = await dbConnect();
     const today = new Date();
     today.setHours(0, 0, 0, 0); // Start of day
 
     // Check if already active today
-    const existingActivity = await statsCollection.findOne({
+    const existingActivity = await db.collection("userStats").findOne({
       userId,
       lastActiveDate: { $gte: today },
     });
 
     if (!existingActivity) {
       // New day activity - update streaks
-      const userStats = await statsCollection.findOne({ userId });
+      const userStats = await db.collection("userStats").findOne({ userId });
       const yesterday = new Date(today);
       yesterday.setDate(yesterday.getDate() - 1);
 
-      const wasActiveYesterday = await statsCollection.findOne({
+      const wasActiveYesterday = await db.collection("userStats").findOne({
         userId,
         lastActiveDate: {
           $gte: yesterday,
@@ -98,7 +98,7 @@ export async function POST(request) {
         longestStreak = Math.max(currentStreak, userStats.longestStreak || 0);
       }
 
-      await statsCollection.updateOne(
+      await db.collection("userStats").updateOne(
         { userId },
         {
           $set: {

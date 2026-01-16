@@ -3,8 +3,9 @@ import { NextResponse } from "next/server";
 
 export async function GET() {
   try {
-    const questsCollection = await dbConnect("quests");
-    const quests = await questsCollection
+    const db = await dbConnect();
+    const quests = await db
+      .collection("quests")
       .find({ selected: true }) // Only fetch quests that have been started
       .sort({ createdAt: -1 })
       .toArray();
@@ -51,8 +52,10 @@ export async function POST(request) {
     }
 
     // Check for duplicate quest ID
-    const questsCollection = await dbConnect("quests");
-    const existingQuest = await questsCollection.findOne({ id: questData.id });
+    const db = await dbConnect();
+    const existingQuest = await db
+      .collection("quests")
+      .findOne({ id: questData.id });
 
     if (existingQuest) {
       return NextResponse.json(
@@ -85,11 +88,12 @@ export async function POST(request) {
       popularity: Number(questData.popularity),
       tags: tags,
       progress: 0,
+      userId: "default-user", // Add userId for achievement tracking
       createdAt: new Date(),
     };
 
     // Insert quest into database
-    const result = await questsCollection.insertOne(quest);
+    const result = await db.collection("quests").insertOne(quest);
 
     return NextResponse.json(
       {

@@ -27,8 +27,9 @@ async function getQuests() {
     console.log("MongoDB URI:", process.env.MONGODB_URI ? "Set" : "Not set");
     console.log("MongoDB DB Name:", process.env.DB_NAME || "Not set");
 
-    const questsCollection = await dbConnect("quests");
-    const quests = await questsCollection
+    const db = await dbConnect();
+    const quests = await db
+      .collection("quests")
       .find({})
       .sort({ createdAt: -1 })
       .toArray();
