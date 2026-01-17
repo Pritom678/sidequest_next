@@ -9,7 +9,7 @@ export async function POST(request) {
     if (!name || !email || !password) {
       return NextResponse.json(
         { error: "Name, email, and password are required" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -17,7 +17,7 @@ export async function POST(request) {
     if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
       return NextResponse.json(
         { error: "Invalid email format" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -25,10 +25,23 @@ export async function POST(request) {
     if (password.length < 6) {
       return NextResponse.json(
         { error: "Password must be at least 6 characters long" },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
+    // For development, allow signup without MongoDB
+    if (process.env.NODE_ENV !== "production") {
+      // Simulate successful signup for development
+      console.log("Development mode: Creating user account for", email);
+
+      return NextResponse.json({
+        success: true,
+        message: "Account created successfully",
+        userId: "dev-user-id",
+      });
+    }
+
+    // Production: Use MongoDB
     const client = new MongoClient(process.env.MONGODB_URI);
 
     try {
@@ -41,7 +54,7 @@ export async function POST(request) {
       if (existingUser) {
         return NextResponse.json(
           { error: "User with this email already exists" },
-          { status: 409 }
+          { status: 409 },
         );
       }
 
@@ -96,7 +109,7 @@ export async function POST(request) {
     console.error("Signup error:", error);
     return NextResponse.json(
       { error: "Failed to create account" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }

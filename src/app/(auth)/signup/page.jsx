@@ -104,7 +104,10 @@ export default function SignUpPage() {
 
         if (result?.ok) {
           toast.success("Welcome to SideQuest!");
-          router.push("/dashboard");
+          // Add a small delay to ensure session is established
+          setTimeout(() => {
+            router.push("/dashboard");
+          }, 500);
         } else {
           toast.error(
             "Account created but login failed. Please try logging in manually.",
