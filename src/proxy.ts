@@ -25,10 +25,12 @@ export default async function middleware(req) {
   // Protect dashboard routes
   if (pathname.startsWith("/dashboard")) {
     if (!token) {
+      console.log("No token found, redirecting to login");
       const loginUrl = new URL("/login", req.url);
       loginUrl.searchParams.set("callbackUrl", pathname);
       return NextResponse.redirect(loginUrl);
     }
+    console.log("Token found, allowing access to dashboard");
   }
 
   return NextResponse.next();
