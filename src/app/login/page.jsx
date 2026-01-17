@@ -286,10 +286,10 @@ function LoginPageContent() {
             </p>
             <div className="space-y-1">
               <p className="text-xs font-mono text-gray-600 dark:text-gray-400">
-                Email: admin@sidequest.com
+                Email: gatubi@mailinator.com
               </p>
               <p className="text-xs font-mono text-gray-600 dark:text-gray-400">
-                Password: sidequest123
+                Password: Pa$$w0rd!
               </p>
             </div>
           </motion.div>
