@@ -48,18 +48,22 @@ export async function GET(request) {
 
     // Get most active category
     const categoryStats = {};
+    const quests = await db.collection("quests").find({}).toArray();
+
     userProgress.forEach((progress) => {
-      const quest = questsCollection.findOne({ id: progress.questId });
+      const quest = quests.find((q) => q.id === progress.questId);
       if (quest) {
         categoryStats[quest.category] =
           (categoryStats[quest.category] || 0) + 1;
       }
     });
 
-    const mostActiveCategory = Object.keys(categoryStats).reduce(
-      (a, b) => (categoryStats[a] > categoryStats[b] ? a : b),
-      Object.keys(categoryStats)[0] || "None"
-    );
+    const mostActiveCategory =
+      Object.keys(categoryStats).length > 0
+        ? Object.keys(categoryStats).reduce((a, b) =>
+            categoryStats[a] > categoryStats[b] ? a : b
+          )
+        : "None";
 
     // Enhanced stats object
     const enhancedStats = {
@@ -83,7 +87,7 @@ export async function GET(request) {
 
     return NextResponse.json({
       success: true,
-      userStats: enhancedStats,
+      stats: enhancedStats,
     });
   } catch (error) {
     console.error("Error fetching user stats:", error);

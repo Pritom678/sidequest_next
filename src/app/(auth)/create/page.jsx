@@ -4,12 +4,11 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { FiZap } from "react-icons/fi";
 import AISuggestionModal from "@/components/quests/AISuggestionModal";
-import ModernButton from "@/components/ui/ModernButton";
-import AchievementNotification from "@/components/achievements/AchievementNotification";
 import { useAchievements } from "@/hooks/useAchievements";
 
 export default function CreateQuestPage() {
   const router = useRouter();
+  const { triggerAchievementCheck } = useAchievements();
   const [formData, setFormData] = useState({
     id: "",
     name: "",
@@ -31,14 +30,6 @@ export default function CreateQuestPage() {
   const [success, setSuccess] = useState("");
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [userHistory, setUserHistory] = useState(null);
-
-  // Initialize achievements hook
-  const {
-    notification,
-    isNotificationVisible,
-    closeNotification,
-    triggerAchievementCheck,
-  } = useAchievements();
 
   const validateField = (name, value) => {
     const newErrors = { ...errors };
@@ -166,6 +157,11 @@ export default function CreateQuestPage() {
 
     setIsAIModalOpen(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
+
+    // Trigger AI assistant achievement
+    triggerAchievementCheck("ai_assistant_used", {
+      timestamp: new Date().toISOString(),
+    });
   };
 
   const handleSubmit = async (e) => {
@@ -228,15 +224,13 @@ export default function CreateQuestPage() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-              <ModernButton
+              <button
                 onClick={() => setIsAIModalOpen(true)}
-                variant="primary"
-                size="md"
-                className="px-6"
+                className="inline-flex items-center gap-2 px-6 py-3 bg-linear-to-r from-blue-500 to-purple-600 hover:from-blue-600 hover:to-purple-700 text-white rounded-lg font-medium transition-all duration-200 hover:scale-105 shadow-lg"
               >
                 <FiZap className="w-5 h-5" />
                 AI Quest Assistant
-              </ModernButton>
+              </button>
 
               <div className="flex items-center gap-2 text-sm opacity-60">
                 <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -744,15 +738,16 @@ export default function CreateQuestPage() {
             )}
 
             <div className="flex flex-col items-center gap-4">
-              <ModernButton
+              <button
                 type="submit"
-                variant="primary"
-                size="md"
-                loading={loading}
-                className="px-8"
+                disabled={loading}
+                className="btn btn-primary btn-lg px-8 min-w-50 text-white rounded-2xl"
               >
                 {loading ? (
-                  "Creating..."
+                  <>
+                    <span className="loading loading-spinner"></span>
+                    Creating...
+                  </>
                 ) : (
                   <>
                     <svg
@@ -771,7 +766,7 @@ export default function CreateQuestPage() {
                     Create Quest
                   </>
                 )}
-              </ModernButton>
+              </button>
 
               {loading && (
                 <div className="flex items-center gap-2 text-sm opacity-70">
@@ -788,12 +783,6 @@ export default function CreateQuestPage() {
           onClose={() => setIsAIModalOpen(false)}
           onAcceptSuggestion={handleAISuggestion}
           userHistory={userHistory}
-        />
-
-        <AchievementNotification
-          achievement={notification}
-          isVisible={isNotificationVisible}
-          onClose={closeNotification}
         />
       </div>
     </div>

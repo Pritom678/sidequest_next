@@ -23,10 +23,7 @@ export const metadata = {
 
 async function getQuests() {
   try {
-    // Debug: Check if environment variables are set
-    console.log("MongoDB URI:", process.env.MONGODB_URI ? "Set" : "Not set");
-    console.log("MongoDB DB Name:", process.env.DB_NAME || "Not set");
-
+    console.log("Fetching quests from database...");
     const db = await dbConnect();
     const quests = await db
       .collection("quests")
@@ -35,8 +32,9 @@ async function getQuests() {
       .toArray();
 
     console.log("Found quests:", quests.length);
-    console.log("Sample quest:", quests[0] || "No quests found");
-
+    if (quests.length > 0) {
+      console.log("Sample quest:", quests[0]);
+    }
     return quests;
   } catch (error) {
     console.error("Error fetching quests:", error);
@@ -94,7 +92,7 @@ export default async function QuestsPage() {
           /* Quests Grid */
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
             {quests.map((quest) => (
-              <QuestCard key={quest.id} quest={quest} />
+              <QuestCard key={quest._id || quest.id} quest={quest} />
             ))}
           </div>
         )}

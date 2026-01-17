@@ -1,11 +1,11 @@
 // AI Service for Quest Suggestions
+export const runtime = "nodejs"; // Add this to fix Edge Runtime compatibility
+
 export class QuestAIService {
   constructor() {
     this.apiKey = process.env.OPENAI_API_KEY;
     this.baseUrl = "https://api.openai.com/v1";
   }
-
-  
 
   async analyzeGoal(goal, userHistory = null) {
     try {
@@ -345,7 +345,10 @@ export class QuestAIService {
   }
 }
 
-console.log('API Key:', process.env.OPENAI_API_KEY ? 'Found' : 'Not found');
-console.log('API Key starts with sk-:', process.env.OPENAI_API_KEY?.startsWith('sk-'));
+console.log("API Key:", process.env.OPENAI_API_KEY ? "Found" : "Not found");
+console.log(
+  "API Key starts with sk-:",
+  process.env.OPENAI_API_KEY?.startsWith("sk-"),
+);
 // Singleton instance
 export const questAI = new QuestAIService();

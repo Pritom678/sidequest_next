@@ -18,7 +18,7 @@ export async function GET() {
     console.error("Error fetching quests:", error);
     return Response.json(
       { success: false, message: "Failed to fetch quests" },
-      { status: 500 }
+      { status: 500 },
     );
   }
 }
@@ -26,6 +26,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const questData = await request.json();
+    console.log("API received questData:", questData); // Debug log
 
     // Validate required fields
     const requiredFields = [
@@ -42,12 +43,20 @@ export async function POST(request) {
       "status",
       "popularity",
     ];
-    const missingFields = requiredFields.filter((field) => !questData[field]);
+    const missingFields = requiredFields.filter((field) => {
+      const value = questData[field];
+      console.log(`Checking field ${field}:`, value, "Type:", typeof value); // Debug log
+      return (
+        !value || (typeof value === "string" ? value.trim() === "" : false)
+      );
+    });
+
+    console.log("Missing fields:", missingFields); // Debug log
 
     if (missingFields.length > 0) {
       return NextResponse.json(
         { error: `Missing required fields: ${missingFields.join(", ")}` },
-        { status: 400 }
+        { status: 400 },
       );
     }
 
@@ -60,17 +69,19 @@ export async function POST(request) {
     if (existingQuest) {
       return NextResponse.json(
         { error: "Quest with this ID already exists" },
-        { status: 409 }
+        { status: 409 },
       );
     }
 
     // Process tags
-    const tags = questData.tags
+    const tags = Array.isArray(questData.tags)
       ? questData.tags
-          .split(",")
-          .map((tag) => tag.trim())
-          .filter((tag) => tag.length > 0)
-      : [];
+      : questData.tags
+        ? questData.tags
+            .split(",")
+            .map((tag) => tag.trim())
+            .filter((tag) => tag.length > 0)
+        : [];
 
     // Create quest document
     const quest = {
@@ -93,7 +104,9 @@ export async function POST(request) {
     };
 
     // Insert quest into database
+    console.log("Attempting to insert quest:", quest); // Debug log
     const result = await db.collection("quests").insertOne(quest);
+    console.log("Insert result:", result); // Debug log
 
     return NextResponse.json(
       {
@@ -101,13 +114,14 @@ export async function POST(request) {
         message: "Quest created successfully",
         questId: result.insertedId,
       },
-      { status: 201 }
+      { status: 201 },
     );
   } catch (error) {
-    console.error("Error creating quest:", error);
+    console.error("Error creating quest:", error); // Debug log
+    console.error("Error details:", error.message); // Debug log
     return NextResponse.json(
-      { error: "Failed to create quest" },
-      { status: 500 }
+      { error: error.message || "Failed to create quest" },
+      { status: 500 },
     );
   }
 }

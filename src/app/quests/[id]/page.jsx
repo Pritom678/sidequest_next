@@ -6,6 +6,7 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import ProgressBar from "@/components/quests/ProgressBar";
 import QuestBadge from "@/components/quests/QuestBadge";
+import { useAchievements } from "@/hooks/useAchievements";
 
 export default function QuestDetailsPage({ params }) {
   const [quest, setQuest] = useState(null);
@@ -14,6 +15,7 @@ export default function QuestDetailsPage({ params }) {
   const [isPageLoading, setIsPageLoading] = useState(true);
   const router = useRouter();
   const [id, setId] = useState(null);
+  const { triggerAchievementCheck } = useAchievements();
 
   // Extract id from params
   useEffect(() => {
@@ -93,6 +95,18 @@ export default function QuestDetailsPage({ params }) {
 
         setMessage("Quest started successfully! 🎯");
 
+        // Trigger time-based achievements
+        const currentHour = new Date().getHours();
+        if (currentHour < 8) {
+          triggerAchievementCheck("early_quest", {
+            createdAt: new Date().toISOString(),
+          });
+        } else if (currentHour >= 22) {
+          triggerAchievementCheck("late_quest", {
+            createdAt: new Date().toISOString(),
+          });
+        }
+
         // Redirect to projects page after 2 seconds
         setTimeout(() => {
           router.push("/projects");
@@ -159,7 +173,7 @@ export default function QuestDetailsPage({ params }) {
               alt={quest.name}
               className="w-full h-full object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent"></div>
+            <div className="absolute inset-0 bg-linear-to-t from-black/60 via-black/20 to-transparent"></div>
 
             {/* Status Badge */}
             <div className="absolute top-4 right-4">
