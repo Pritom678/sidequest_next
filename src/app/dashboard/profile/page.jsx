@@ -1,13 +1,36 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { FiUser, FiMail, FiCalendar, FiEdit2 } from "react-icons/fi";
 import { motion } from "framer-motion";
 
 export default function DashboardProfilePage() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
+
+  useEffect(() => {
+    if (status === "loading") return;
+
+    if (!session) {
+      router.push("/login");
+      return;
+    }
+  }, [session, status, router]);
+
+  if (status === "loading") {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="loading loading-spinner"></div>
+      </div>
+    );
+  }
+
+  if (!session) {
+    return null; // Will redirect
+  }
 
   const userStats = {
     joinDate: new Date().toLocaleDateString(),

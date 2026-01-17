@@ -83,7 +83,11 @@ export const authOptions = {
           return null;
         } finally {
           if (process.env.NODE_ENV === "production") {
-            await client.close();
+            try {
+              await client.close();
+            } catch (closeError) {
+              console.error("Error closing MongoDB connection:", closeError);
+            }
           }
         }
       },
@@ -142,6 +146,7 @@ export const authOptions = {
       },
     },
   },
+  debug: process.env.NODE_ENV === "development",
 };
 
 const handler = NextAuth(authOptions);
