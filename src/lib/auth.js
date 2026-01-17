@@ -124,6 +124,10 @@ export const authOptions = {
   secret: process.env.NEXTAUTH_SECRET,
   // Add this to fix custom property error
   trustHost: true,
+  // Explicitly set NEXTAUTH_URL for production
+  ...(process.env.NODE_ENV === "production" && {
+    url: process.env.NEXTAUTH_URL || "https://sidequest-next.vercel.app",
+  }),
   // Add cookies configuration for better session persistence
   cookies: {
     sessionToken: {
@@ -133,6 +137,8 @@ export const authOptions = {
         sameSite: "lax",
         path: "/",
         secure: process.env.NODE_ENV === "production",
+        domain:
+          process.env.NODE_ENV === "production" ? ".vercel.app" : undefined,
       },
     },
   },
