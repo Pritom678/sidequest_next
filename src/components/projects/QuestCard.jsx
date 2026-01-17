@@ -41,7 +41,7 @@ export default function QuestCard({ quest }) {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d="M21 13.255A23.918 23.918 0 0111.78 8.984 23.918 23.918 0 018.016 3.27 21.255 13.255zM12 4.454a8.545 8.545 0 00-8.545 8.545 8.545 8.545 0 008.545-8.545zM12 19a1 1 0 102 0 1 1 0 00-2 0zm6-6a7 7 0 11-14 0 7 7 0 0114 0z"
+              d="M12 2L2 7L12 12L22 7L12 2Z"
             />
           </svg>
         );
@@ -113,7 +113,7 @@ export default function QuestCard({ quest }) {
         <div className="absolute top-4 right-4">
           <div
             className={`px-3 py-1.5 rounded-full text-xs font-semibold text-white shadow-lg ${getStatusColor(
-              quest.status
+              quest.status,
             )}`}
           >
             {quest.status.replace("-", " ")}
@@ -132,7 +132,7 @@ export default function QuestCard({ quest }) {
           <div className="flex items-center gap-3">
             <span
               className={`px-2.5 py-1 rounded-md text-xs font-semibold border ${getDifficultyColor(
-                quest.difficulty
+                quest.difficulty,
               )}`}
             >
               {quest.difficulty}
